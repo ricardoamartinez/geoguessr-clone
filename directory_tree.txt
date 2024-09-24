@@ -1,0 +1,29 @@
+geoguessr-clone/
+│   ├── .env.local
+│   ├── next.config.js
+│   ├── package.json
+│   ├── tailwind.config.js
+│   ├── tsconfig.json
+│   ├── src/
+│   │   │   ├── layout.tsx
+│   │   │   ├── page.tsx
+│   │   ├── components/
+│   │   │   ├── Footer.tsx
+│   │   │   ├── GameControls.tsx
+│   │   │   ├── GameModeDisplay.tsx
+│   │   │   ├── GameModeSelector.tsx
+│   │   │   ├── GameResults.tsx
+│   │   │   ├── Header.tsx
+│   │   │   ├── Leaderboard.tsx
+│   │   │   ├── MapContainer.tsx
+│   │   │   ├── MusicPlayer.tsx
+│   │   ├── contexts/
+│   │   │   ├── GameContext.tsx
+│   │   ├── hooks/
+│   │   │   ├── useSound.ts
+│   │   ├── lib/
+│   │   │   ├── socket.ts
+│   │   ├── styles/
+│   │   │   ├── globals.css
+│   │   ├── types/
+│   │   │   ├── index.d.ts
