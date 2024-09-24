@@ -1,43 +1,37 @@
+// src/lib/socket.ts
+
+'use client';
+
 import { useEffect, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
+import io, { Socket } from 'socket.io-client';
 
 let socket: Socket | null = null;
 
-export const initiateSocket = (room: string) => {
-  if (!socket) {
-    socket = io(undefined, { path: '/api/socketio' });
-    socket.emit('join-room', room);
-    console.log('Socket.io client initialized and joined room:', room);
-  }
-};
-
-export const disconnectSocket = () => {
-  if (socket) socket.disconnect();
-  socket = null;
-};
-
 export const useSocket = (room: string) => {
-  const [isConnected, setIsConnected] = useState(false);
+  const [socketInstance, setSocketInstance] = useState<Socket | null>(null);
 
   useEffect(() => {
-    initiateSocket(room);
-
-    if (socket) {
-      socket.on('connect', () => {
-        setIsConnected(true);
-        console.log('Connected to Socket.io server');
-      });
-
-      socket.on('disconnect', () => {
-        setIsConnected(false);
-        console.log('Disconnected from Socket.io server');
+    if (!socket) {
+      socket = io(process.env.NEXT_PUBLIC_SOCKET_IO_SERVER_URL || '', {
+        transports: ['websocket'],
       });
     }
 
-    return () => {
-      disconnectSocket();
+    if (room) {
+      socket.emit('join-room', room);
+    }
+
+    setSocketInstance(socket);
+
+    const cleanup = () => {
+      if (socket) {
+        socket.disconnect();
+        socket = null;
+      }
     };
+
+    return cleanup;
   }, [room]);
 
-  return { socket, isConnected };
+  return { socket: socketInstance };
 };

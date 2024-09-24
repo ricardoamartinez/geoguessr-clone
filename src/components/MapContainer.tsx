@@ -1,3 +1,5 @@
+// src/components/MapContainer.tsx
+
 'use client';
 
 import React from 'react';
@@ -22,7 +24,12 @@ const mapContainerStyle = {
 
 const initialCenter: LatLngLiteral = { lat: 0, lng: 0 };
 
-const MapContainer = ({ isLoaded, currentLocation, guessLocation, handleMapClick }: MapContainerProps) => {
+const MapContainer: React.FC<MapContainerProps> = ({
+  isLoaded,
+  currentLocation,
+  guessLocation,
+  handleMapClick,
+}) => {
   const { gameStarted, darkMode, players, playerId } = useGame();
 
   if (!isLoaded) {
@@ -109,4 +116,4 @@ const MapContainer = ({ isLoaded, currentLocation, guessLocation, handleMapClick
   );
 };
 
-export default MapContainer;
+export default React.memo(MapContainer);

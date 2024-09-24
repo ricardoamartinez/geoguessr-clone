@@ -1,16 +1,14 @@
-'use client';
+// src/components/Header.tsx
 
-import { motion } from 'framer-motion';
+import React from 'react';
+// Ensure no import of useGame or client components that use it
 
-const Header = () => (
-  <motion.header
-    className="bg-blue-600 text-white p-4 shadow-md"
-    initial={{ y: -50 }}
-    animate={{ y: 0 }}
-    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-  >
-    <h1 className="text-3xl font-bold text-center">GeoGuessr Clone</h1>
-  </motion.header>
-);
+const Header = () => {
+  return (
+    <header className="w-full bg-gray-800 p-4">
+      <h1 className="text-white text-2xl">GeoGuessr Clone</h1>
+    </header>
+  );
+};
 
 export default Header;

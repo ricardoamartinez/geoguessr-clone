@@ -1,6 +1,15 @@
+// src/contexts/GameContext.tsx
+
 'use client';
 
-import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+} from 'react';
 import { useLoadScript } from '@react-google-maps/api';
 import { useSocket } from '../lib/socket';
 
@@ -21,7 +30,7 @@ type GameContextType = {
   darkMode: boolean;
   toggleDarkMode: () => void;
   guessLocation: LatLngLiteral | null;
-  setGuessLocation: (location: LatLngLiteral | null) => void;
+  setGuessLocation: React.Dispatch<React.SetStateAction<LatLngLiteral | null>>;
   setScore: React.Dispatch<React.SetStateAction<number>>;
   setRound: React.Dispatch<React.SetStateAction<number>>;
   setGameStarted: React.Dispatch<React.SetStateAction<boolean>>;
@@ -37,25 +46,34 @@ type GameContextType = {
   playerId: string;
   cooldown: boolean;
   setCooldown: React.Dispatch<React.SetStateAction<boolean>>;
+  isLoaded: boolean;
+  loadError: Error | undefined;
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
-export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [gameStarted, setGameStarted] = useState(false);
-  const [currentLocation, setCurrentLocation] = useState<LatLngLiteral>({ lat: 0, lng: 0 });
-  const [guessLocation, setGuessLocation] = useState<LatLngLiteral | null>(null);
+  const [currentLocation, setCurrentLocation] = useState<LatLngLiteral>({
+    lat: 0,
+    lng: 0,
+  });
+  const [guessLocation, setGuessLocation] = useState<LatLngLiteral | null>(
+    null
+  );
   const [score, setScore] = useState(0);
   const [round, setRound] = useState(0);
   const [darkMode, setDarkMode] = useState(false);
   const [players, setPlayers] = useState<Player[]>([]);
   const [gameMode, setGameMode] = useState<GameMode>('classic');
   const [playerId, setPlayerId] = useState<string>('');
-  const [cooldown, setCooldown] = useState<boolean>(false); // Added
+  const [cooldown, setCooldown] = useState<boolean>(false);
 
-  const { socket } = useSocket('default-room'); // Removed 'isConnected'
+  const { socket } = useSocket('default-room'); // Ensure useSocket is correctly implemented
 
-  const { isLoaded } = useLoadScript({ // Removed 'loadError'
+  const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
     libraries: ['places', 'geometry'],
   });
@@ -79,13 +97,18 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setPlayers((prev) => prev.filter((player) => player.id !== id));
       });
 
-      socket.on('player-guess', (data: { playerId: string; guess: LatLngLiteral }) => {
-        setPlayers((prev) =>
-          prev.map((player) =>
-            player.id === data.playerId ? { ...player, guess: data.guess } : player
-          )
-        );
-      });
+      socket.on(
+        'player-guess',
+        (data: { playerId: string; guess: LatLngLiteral }) => {
+          setPlayers((prev) =>
+            prev.map((player) =>
+              player.id === data.playerId
+                ? { ...player, guess: data.guess }
+                : player
+            )
+          );
+        }
+      );
 
       // Request unique ID
       socket.emit('request-id');
@@ -144,7 +167,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Update player's score
     setPlayers((prevPlayers) =>
       prevPlayers.map((player) =>
-        player.id === playerId ? { ...player, score: player.score + roundScore } : player
+        player.id === playerId
+          ? { ...player, score: player.score + roundScore }
+          : player
       )
     );
 
@@ -158,18 +183,26 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const maxRounds = gameMode === 'classic' ? 5 : 3;
 
     if (round < maxRounds) {
-      setCooldown(true); // Added
+      setCooldown(true);
       setTimeout(() => {
         setRound((prevRound) => prevRound + 1);
         generateNewLocation();
-        setCooldown(false); // Added
+        setCooldown(false);
       }, 3000); // 3-second cooldown
     } else {
       setGameStarted(false);
       // Optionally, emit game end event
       socket?.emit('end-game', { room: 'default-room' });
     }
-  }, [currentLocation, guessLocation, round, generateNewLocation, playerId, socket, gameMode]);
+  }, [
+    currentLocation,
+    guessLocation,
+    round,
+    generateNewLocation,
+    playerId,
+    socket,
+    gameMode,
+  ]);
 
   const toggleDarkMode = useCallback(() => setDarkMode((prev) => !prev), []);
 
@@ -195,8 +228,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       gameMode,
       setGameMode,
       playerId,
-      cooldown, // Added
-      setCooldown, // Added
+      cooldown,
+      setCooldown,
+      isLoaded,
+      loadError,
     }),
     [
       score,
@@ -219,8 +254,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       gameMode,
       setGameMode,
       playerId,
-      cooldown, // Added
-      setCooldown, // Added
+      cooldown,
+      setCooldown,
+      isLoaded,
+      loadError,
     ]
   );
 

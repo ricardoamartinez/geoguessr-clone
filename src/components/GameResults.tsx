@@ -1,3 +1,5 @@
+// src/components/GameResults.tsx
+
 'use client';
 
 import React from 'react';
@@ -5,7 +7,7 @@ import { motion } from 'framer-motion';
 import { useGame } from '../contexts/GameContext';
 
 const GameResults = () => {
-  const { players, playerId, gameMode } = useGame(); // Kept 'gameMode'
+  const { players, playerId, gameMode } = useGame();
 
   // Sort players by score descending
   const sortedPlayers = [...players].sort((a, b) => b.score - a.score);

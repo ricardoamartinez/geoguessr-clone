@@ -7,13 +7,16 @@ geoguessr-clone/
 │   ├── src/
 │   │   │   ├── layout.tsx
 │   │   │   ├── page.tsx
+│   │   │   ├── _not-found.tsx
 │   │   ├── components/
+│   │   │   ├── ClientLayout.tsx
 │   │   │   ├── Footer.tsx
 │   │   │   ├── GameControls.tsx
 │   │   │   ├── GameModeDisplay.tsx
 │   │   │   ├── GameModeSelector.tsx
 │   │   │   ├── GameResults.tsx
 │   │   │   ├── Header.tsx
+│   │   │   ├── HomePage.tsx
 │   │   │   ├── Leaderboard.tsx
 │   │   │   ├── MapContainer.tsx
 │   │   │   ├── MusicPlayer.tsx
@@ -23,6 +26,7 @@ geoguessr-clone/
 │   │   │   ├── useSound.ts
 │   │   ├── lib/
 │   │   │   ├── socket.ts
+│   │   ├── pages/
 │   │   ├── styles/
 │   │   │   ├── globals.css
 │   │   ├── types/
